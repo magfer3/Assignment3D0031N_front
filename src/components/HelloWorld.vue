@@ -1,6 +1,8 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <!-- dropdown för kurskod-->
+     <!-- dropdown-item måste sättas till kurskoder importerade i methods-->
       <b-dropdown
         split
         split-variant="outline-primary"
@@ -12,6 +14,8 @@
         <b-dropdown-item href="#">A0000N</b-dropdown-item>
         <b-dropdown-item href="#">E0000N</b-dropdown-item>
       </b-dropdown>
+       <!-- dropdown för modul i ladok-->
+       <!-- dropdown-item måste sättas till  moduler importerade i methods-->
       <b-dropdown
         split
         split-variant="outline-primary"
@@ -23,11 +27,18 @@
         <b-dropdown-item href="#">Modul 2</b-dropdown-item>
         <b-dropdown-item href="#">Modul 3</b-dropdown-item>
       </b-dropdown>
+      <!-- tabellen-->
+      <!-- itererar nu över items-arrayen i data()-->
       <b-table striped hover :items="items"></b-table>
     
   </div>
+
 </template>
 
+<!-- lägg till dataobjekt för kursmoment-->
+<!-- lägg till dataobjekt för personnummer-->
+<!-- lägg till fetch-metod för import av kursmoment-->
+<!-- lägg till fetch-metod för import av personnummer-->
 <script>
 export default {
   name: 'HelloWorld',
@@ -43,7 +54,7 @@ export default {
           { first_name: 'Jami', last_name: 'Carney', omdome_canvas: '', examinations_datum: '', betyg_ladok: '', status: '', information: ''}
         ]
       }
-    }
+    },
 }
 </script>
 
