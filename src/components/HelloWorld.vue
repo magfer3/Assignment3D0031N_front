@@ -1,34 +1,28 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <!-- dropdown för kurskod-->
-     <!-- dropdown-item måste sättas till kurskoder importerade i methods-->
-      <b-dropdown
-        split
-        split-variant="outline-primary"
-        variant="primary"
-        text="Kurskod"
-        class="m-2"
-      >
-        <b-dropdown-item href="#">D0000N</b-dropdown-item>
-        <b-dropdown-item href="#">A0000N</b-dropdown-item>
-        <b-dropdown-item href="#">E0000N</b-dropdown-item>
-      </b-dropdown>
-       <!-- dropdown för modul i ladok-->
-       <!-- dropdown-item måste sättas till  moduler importerade i methods-->
-      <b-dropdown
-        split
-        split-variant="outline-primary"
-        variant="primary"
-        text="Modul i Ladok"
-        class="m-2"
-      >
-        <b-dropdown-item href="#">Modul 1</b-dropdown-item>
-        <b-dropdown-item href="#">Modul 2</b-dropdown-item>
-        <b-dropdown-item href="#">Modul 3</b-dropdown-item>
-      </b-dropdown>
+  <div class="container">
+    <div class="row">
+      <!-- Input för kurskod-->
+      <div class="col-sm">
+        <label for="kursKodInput">Kurskod</label>
+        <input class="form-control input-sm" id="kursKodInput" type="text" v-model="selected_kursKod" placeholder="Skriv in kurskoden här">
+      <code>{{selected_kursKod}}</code>
+      </div>
+      <!-- Dropdown för modul-->
+      <div class="col-sm">
+          <div class="col-sm">
+          <label for="modul" > Modul i Ladok </label>
+          <Dropdown :url="URL_modul" @selectedItem="getSelectedItem" />
+      </div>
+      <code>{{selected_modul}}</code>
+    </div>
+    </div>
+  </div>
+
       <!-- tabellen-->
       <!-- itererar nu över items-arrayen i data()-->
+      <!-- ska uppdateras till lista med studenter och omdöme i Canvas efter att kurskoden är vald-->
       <b-table striped hover :items="items"></b-table>
     
   </div>
@@ -40,6 +34,8 @@
 <!-- lägg till fetch-metod för import av kursmoment-->
 <!-- lägg till fetch-metod för import av personnummer-->
 <script>
+import Dropdown from './Dropdown.vue'
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -52,9 +48,22 @@ export default {
           { first_name: 'Larsen', last_name: 'Shaw', omdome_canvas: '', examinations_datum: '', betyg_ladok: '', status: '', information: ''},
           { first_name: 'Geneva', last_name: 'Wilson', omdome_canvas: '', examinations_datum: '', betyg_ladok: '', status: '', information: ''},
           { first_name: 'Jami', last_name: 'Carney', omdome_canvas: '', examinations_datum: '', betyg_ladok: '', status: '', information: ''}
-        ]
+        ],
+        URL_kursKod: "urltest",
+        URL_modul: "",
+        selected_kursKod: '',
+        selected_modul: ''
       }
+
     },
+    components: {
+    Dropdown
+  }, 
+  methods: {
+    getSelectedItem(item){
+      this.selected_modul = item; 
+    }
+  }
 }
 </script>
 
