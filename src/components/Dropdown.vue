@@ -1,21 +1,25 @@
 <template>
-    <div class="form-group">
-        <b-form-select v-model="selected" :options="options" @change="$emit('selectedItem', selected)"></b-form-select>
-        {{url}}
+   <div>
+        <div class="form-group">
+            <b-form @mouseover="fetchDataAxios">
+                <b-form-select  v-model="selected" :options="options" @change="$emit('selectedItem', selected)"></b-form-select>
+            
+            </b-form>
+        </div>
     </div>
     
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 
 export default {
-    created() {
-    this.fetchDataAxios();
-    },
     name: 'Dropdown',
     props: {
-        url: String
+        kurskod: String
+    },
+    created(){
+
     },
     data() {
         return {
@@ -32,15 +36,15 @@ export default {
     methods: {
         async fetchData() {
         const res = await fetch(
-        "http://localhost:8080/Assignment3.2_D0031N/resources/epok/D0031N");
+        "http://localhost:8080/Assignment3.2_D0031N/resources/epok/" + this.kurskod);
         const val = await res.text();
         this.text = val;
         console.log(this.text);
         console.log(this.url);
         },
         fetchDataAxios(){
-            axios.get('http://192.168.1.246:8080/Assignment3_d0031N/resources/canvas/D0031N')
-            .then(res => console.log(res)) 
+            axios.get('http://localhost:8080/Assignment3_d0031N/resources/epok/' + this.kurskod)
+            .then(res => this.options = res.data ) 
             .catch(err => console.log(err));
 
         }

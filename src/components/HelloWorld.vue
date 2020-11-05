@@ -13,7 +13,7 @@
       <div class="col-sm">
           <div class="col-sm">
           <label for="modul" > Modul i Ladok </label>
-          <Dropdown :url="URL_modul" @selectedItem="getSelectedItem" />
+          <Dropdown :kurskod="selected_kursKod" @selectedItem="getSelectedItem" />
       </div>
       <code>{{selected_modul}}</code>
     </div>
@@ -23,15 +23,15 @@
       <!-- tabellen-->
       <!-- itererar nu över items-arrayen i data()-->
       <!-- ska uppdateras till lista med studenter och omdöme i Canvas efter att kurskoden är vald-->
-      <b-table striped hover :items="items"></b-table>
+      <b-table striped hover :items="items" :fields="fields"></b-table>
     
   </div>
 
 </template>
 
 <script>
-import Dropdown from './Dropdown.vue'
-
+import Dropdown from './Dropdown.vue';
+import axios from 'axios';
 export default {
   name: 'HelloWorld',
   props: {
@@ -39,25 +39,23 @@ export default {
   },
   data() {
       return {
-        items: [
-          { first_name: 'Dickerson', last_name: 'Macdonald',  omdome_canvas: '', examinations_datum: '', betyg_ladok: '', status: '', information: ''},
-          { first_name: 'Larsen', last_name: 'Shaw', omdome_canvas: '', examinations_datum: '', betyg_ladok: '', status: '', information: ''},
-          { first_name: 'Geneva', last_name: 'Wilson', omdome_canvas: '', examinations_datum: '', betyg_ladok: '', status: '', information: ''},
-          { first_name: 'Jami', last_name: 'Carney', omdome_canvas: '', examinations_datum: '', betyg_ladok: '', status: '', information: ''}
-        ],
-        URL_kursKod: "",
-        URL_modul: "./d0031n_frontend/epok.json",
+        fields: ['firstName', 'lastName', 'grades' ],
+        items: [{"firstName":"Lukas","grades":[{"grade":"U","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"U","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Skog","userName":"luksok-8"},{"firstName":"Magdalena","grades":[{"grade":"VG","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Fernlund","userName":"magrad-2"},{"firstName":"Simon","grades":[{"grade":"G","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekta"}],"lastName":"Sterner","userName":"simste-6"}
+         ],
         selected_kursKod: '',
         selected_modul: ''
       }
 
     },
     components: {
-    Dropdown
+    Dropdown,
   }, 
   methods: {
     getSelectedItem(item){
-      this.selected_modul = item; 
+        this.selected_modul = item;
+        axios.get('http://localhost:8080/Assignment3_d0031N/resources/canvas/' + this.selected_kursKod)
+            .then(res => this.items = res.data) 
+            .catch(err => console.log(err));
     },
     submitKursKod(){
       this.URL_kursKod = "" + this.selected_kursKod
