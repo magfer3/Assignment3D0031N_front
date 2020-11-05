@@ -6,7 +6,7 @@
       <!-- Input för kurskod-->
       <div class="col-sm">
         <label for="kursKodInput">Kurskod</label>
-        <input class="form-control input-sm" id="kursKodInput" type="text" v-model="selected_kursKod" placeholder="Skriv in kurskoden här">
+        <input class="form-control input-sm" v-on:keyup.enter="submitKursKod" id="kursKodInput" type="text" v-model="selected_kursKod" placeholder="Skriv in kurskoden här">
       <code>{{selected_kursKod}}</code>
       </div>
       <!-- Dropdown för modul-->
@@ -29,10 +29,6 @@
 
 </template>
 
-<!-- lägg till dataobjekt för kursmoment-->
-<!-- lägg till dataobjekt för personnummer-->
-<!-- lägg till fetch-metod för import av kursmoment-->
-<!-- lägg till fetch-metod för import av personnummer-->
 <script>
 import Dropdown from './Dropdown.vue'
 
@@ -49,8 +45,8 @@ export default {
           { first_name: 'Geneva', last_name: 'Wilson', omdome_canvas: '', examinations_datum: '', betyg_ladok: '', status: '', information: ''},
           { first_name: 'Jami', last_name: 'Carney', omdome_canvas: '', examinations_datum: '', betyg_ladok: '', status: '', information: ''}
         ],
-        URL_kursKod: "urltest",
-        URL_modul: "",
+        URL_kursKod: "",
+        URL_modul: "./d0031n_frontend/epok.json",
         selected_kursKod: '',
         selected_modul: ''
       }
@@ -62,6 +58,10 @@ export default {
   methods: {
     getSelectedItem(item){
       this.selected_modul = item; 
+    },
+    submitKursKod(){
+      this.URL_kursKod = "" + this.selected_kursKod
+      console.log(this.URL_kursKod)
     }
   }
 }
