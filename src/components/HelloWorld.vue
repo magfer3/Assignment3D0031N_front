@@ -125,24 +125,12 @@ export default {
       date: "2020-12-25",
       grade: "MVG",
     }
-
     const config = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
     axios.post('http://localhost:8080/Assignment3.2_D0031N/resources/ladok', queryString.stringify(requestBody), config).then(res => console.log(res)).catch(err => console.log(err));
-/*
-     const pNmr = "9603169876";
-     const course = "D0031N";
-     const module ="0005";
-     const date = "2020-12-12";
-     const grade = "G";
-
-     axios.post('http://localhost:8080/Assignment3.2_D0031N/resources/canvas/',
-     {pNmr, course, module, date, grade
-     }).then(res => console.log(res)).catch(err => console.log(err));
-  */   console.log("funkar wihoo");
    },
     getPNmbr(nmr){
             axios.get('http://localhost:8080/Assignment3.2_D0031N/resources/studentits/' + nmr)
