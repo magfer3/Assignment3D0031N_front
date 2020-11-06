@@ -14,8 +14,10 @@
           <div class="col-sm">
           <label for="modul" > Modul i Ladok </label>
           <Dropdown :kurskod="selected_kursKod" @selectedItem="getSelectedItem" />
+      <button @click="pushToLadok">Pusha till Ladok</button>
       </div>
       <code>{{selected_modul}}</code>
+      
     </div>
     </div>
   </div>
@@ -45,11 +47,18 @@
       </template>
       -->
       <template v-slot:cell(examinationsdatum)="row">
-        <b-form-input v-model="row.item.examinationsdatum"/>
+        <b-form-datepicker v-model="row.item.examinationsdatum"/>
       </template>
       <template v-slot:cell(ladok_grade)="row">
         <b-form-select v-model="row.item.ladok_grade" :options="grades_options"></b-form-select>
       </template>
+
+      
+      <template v-slot:cell(PNmbr)="row">
+        <b-form v-model="row.item.PNmbr" ></b-form>
+      </template>
+
+
       <template v-slot:cell(grades)="row">
         <div v-for="items in row.item" :key="items.grade">
           <div v-for="grade in items" :key="grade">
@@ -68,6 +77,8 @@
 <script>
 import Dropdown from './Dropdown.vue';
 import axios from 'axios';
+import queryString from 'query-string';
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -82,9 +93,10 @@ export default {
           {key: 'examinationsdatum'},
           {key: 'ladok_grade'},
           {key: 'Status'},
-          {key: 'Information'}],
-        items: [{"firstName":"Lukas","grades":[{"grade":"U","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"U","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Skog","userName":"luksok-8"},{"firstName":"Magdalena","grades":[{"grade":"VG","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Fernlund","userName":"magrad-2"},{"firstName":"Simon","grades":[{"grade":"G","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekta"}],"lastName":"Sterner","userName":"simste-6"}
-         ],
+          {key: 'Information'},
+          {key: 'PNmbr'}],
+        items: [/*{"firstName":"Lukas","grades":[{"grade":"U","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"U","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Skog","userName":"luksok-8"},{"firstName":"Magdalena","grades":[{"grade":"VG","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Fernlund","userName":"magrad-2"},{"firstName":"Simon","grades":[{"grade":"G","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekta"}],"lastName":"Sterner","userName":"simste-6"}
+        */ ],
         selected_kursKod: '',
         selected_modul: '',
         selected_items: [],
@@ -96,10 +108,45 @@ export default {
     Dropdown,
   }, 
   methods: {
+    created(){
+      console.log(this.items[0]);
+    },
     getSelectedItem(item){
         this.selected_modul = item;
-        axios.get('http://localhost:8080/Assignment3_d0031N/resources/canvas/' + this.selected_kursKod)
+        axios.get('http://localhost:8080/Assignment3.2_D0031N/resources/canvas/' + this.selected_kursKod)
             .then(res => this.items = res.data) 
+            .catch(err => console.log(err));
+   },
+   pushToLadok(){
+   const requestBody = {
+      pNmr: "9603169876",
+      course: "D0031N",
+      module: "0005",
+      date: "2020-12-25",
+      grade: "MVG",
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+    axios.post('http://localhost:8080/Assignment3.2_D0031N/resources/ladok', queryString.stringify(requestBody), config).then(res => console.log(res)).catch(err => console.log(err));
+/*
+     const pNmr = "9603169876";
+     const course = "D0031N";
+     const module ="0005";
+     const date = "2020-12-12";
+     const grade = "G";
+
+     axios.post('http://localhost:8080/Assignment3.2_D0031N/resources/canvas/',
+     {pNmr, course, module, date, grade
+     }).then(res => console.log(res)).catch(err => console.log(err));
+  */   console.log("funkar wihoo");
+   },
+    getPNmbr(nmr){
+            axios.get('http://localhost:8080/Assignment3.2_D0031N/resources/studentits/' + nmr)
+            .then(res => console.log(res)) 
             .catch(err => console.log(err));
     },
     submitKursKod(){
