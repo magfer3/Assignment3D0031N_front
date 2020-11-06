@@ -47,9 +47,17 @@
       <template v-slot:cell(examinationsdatum)="row">
         <b-form-input v-model="row.item.examinationsdatum"/>
       </template>
-            <template v-slot:cell(ladok_grade)="row">
+      <template v-slot:cell(ladok_grade)="row">
         <b-form-select v-model="row.item.ladok_grade" :options="grades_options"></b-form-select>
       </template>
+      <template v-slot:cell(grades)="row">
+        <div v-for="items in row.item" :key="items.grade">
+          <div v-for="grade in items" :key="grade">
+            {{grade.nameOfAssignment}} {{grade.grade}}
+          </div>
+        </div>
+      </template>
+      
     </b-table>
 
     {{selected_items}}
@@ -101,7 +109,13 @@ export default {
     onRowSelected(items) {
         this.selected_items = items
       }
-  }
+  },
+  filters: {
+       // Filter definitions
+    toArray(value) {
+      return value.toUpperCase();
+      }
+    }
 }
 </script>
 
