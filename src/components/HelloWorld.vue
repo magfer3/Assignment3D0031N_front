@@ -96,11 +96,15 @@ export default {
           {key: 'Information'},
           {key: 'PNmbr'}],
         items: [/*{"firstName":"Lukas","grades":[{"grade":"U","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"U","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Skog","userName":"luksok-8"},{"firstName":"Magdalena","grades":[{"grade":"VG","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Fernlund","userName":"magrad-2"},{"firstName":"Simon","grades":[{"grade":"G","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekta"}],"lastName":"Sterner","userName":"simste-6"}
-        */ ],
+         */],
         selected_kursKod: '',
         selected_modul: '',
         selected_items: [],
-        grades_options: ['U', 'G', 'VG']
+        grades_options: ['U', 'G', 'VG'],
+        pushArray: [/*{"pNmr": "9603169876", "course": "D0031N", "module": "0002", "date": "2020-12-25", "grade": "MVG"},
+        {"pNmr": "9408315678", "course": "D0031N", "module": "0005", "date": "2020-12-25", "grade": "G"}*/],
+        requestBody: '',
+        failedPush: []
       }
 
     },
@@ -108,9 +112,6 @@ export default {
     Dropdown,
   }, 
   methods: {
-    created(){
-      console.log(this.items[0]);
-    },
     getSelectedItem(item){
         this.selected_modul = item;
         axios.get('http://localhost:8080/Assignment3.2_D0031N/resources/canvas/' + this.selected_kursKod)
@@ -118,31 +119,37 @@ export default {
             .catch(err => console.log(err));
    },
    pushToLadok(){
-   const requestBody = {
-      pNmr: "9603169876",
-      course: "D0031N",
-      module: "0005",
-      date: "2020-12-25",
-      grade: "MVG",
-    }
-    const config = {
+     this.failedPush = [];
+     Array.prototype.forEach.call(this.pushArray, stud =>{
+     this.requestBody = stud;
+     const config = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
-    axios.post('http://localhost:8080/Assignment3.2_D0031N/resources/ladok', queryString.stringify(requestBody), config).then(res => console.log(res)).catch(err => console.log(err));
-   },
-    getPNmbr(nmr){
-            axios.get('http://localhost:8080/Assignment3.2_D0031N/resources/studentits/' + nmr)
-            .then(res => console.log(res)) 
-            .catch(err => console.log(err));
-    },
+    axios.post('http://localhost:8080/Assignment3.2_D0031N/resources/ladok', queryString.stringify(this.requestBody), config).then(res => console.log(res)).catch(err => {
+    console.log(err);
+    this.failedPush.push(this.requestBody)
+    }
+    );
+     })},
     submitKursKod(){
       this.URL_kursKod = "" + this.selected_kursKod
       console.log(this.URL_kursKod)
     },
     onRowSelected(items) {
         this.selected_items = items
+        this.pushArray = this.selected_items.map(obj => {
+        let rObj = {}
+        axios.get('http://localhost:8080/Assignment3.2_D0031N/resources/studentits/' + obj.userName)
+            .then(res => rObj["pNmr"] = res.data) 
+            .catch(err => console.log(err))
+          rObj["course"] = this.selected_kursKod
+          rObj["module"] = this.selected_modul
+          rObj["date"] = obj.examinationsdatum
+          rObj["grade"] = obj.ladok_grade
+          return rObj 
+      })
       }
   },
   filters: {
