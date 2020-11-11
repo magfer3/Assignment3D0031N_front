@@ -1,28 +1,28 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-  <div class="container">
-    <div class="row">
-      <!-- Input för kurskod-->
-      <div class="col-sm">
-        <label for="kursKodInput">Kurskod</label>
-        <input class="form-control input-sm" v-on:keyup.enter="submitKursKod" id="kursKodInput" type="text" v-model="selected_kursKod" placeholder="Skriv in kurskoden här">
-      <code>{{selected_kursKod}}</code>
+    <div class="container">
+      <div class="row">
+        <!-- Input för kurskod-->
+        <div class="col-sm">
+          <label for="kursKodInput">Kurskod</label>
+          <input class="form-control input-sm" v-on:keyup.enter="submitKursKod" id="kursKodInput" type="text" v-model="selected_kursKod" placeholder="Skriv in kurskoden här">
+        <code>{{selected_kursKod}}</code>
+        </div>
+        <!-- Dropdown för modul-->
+        <div class="col-sm">
+            <div class="col-sm">
+            <label for="modul" > Modul i Ladok </label>
+            <Dropdown :kurskod="selected_kursKod" @selectedItem="getSelectedItem" />
+            <button @click="pushToLadok" v-b-modal.modal-1>Pusha till Ladok</button>
+            </div>
+          <code>{{selected_modul}}</code>
+        
+        </div>
       </div>
-      <!-- Dropdown för modul-->
-      <div class="col-sm">
-          <div class="col-sm">
-          <label for="modul" > Modul i Ladok </label>
-          <Dropdown :kurskod="selected_kursKod" @selectedItem="getSelectedItem" />
-      <button @click="pushToLadok">Pusha till Ladok</button>
-      </div>
-      <code>{{selected_modul}}</code>
-      
     </div>
-    </div>
-  </div>
 
-      <!-- tabellen-->
+        <!-- tabellen-->
       <!-- itererar nu över items-arrayen i data()-->
       <!-- ska uppdateras till lista med studenter och omdöme i Canvas efter att kurskoden är vald-->
       <b-table
@@ -34,31 +34,15 @@
       @row-selected="onRowSelected"
       responsive="sm"
     >
-      <!-- Example scoped slot for select state illustrative purposes -->
-      <!--<template #cell(selected)="{ rowSelected }">
-        <template v-if="rowSelected" >
-          <span aria-hidden="true">&check;</span>
-          <span class="sr-only">Selected</span>
-        </template>
-        <template v-else>
-          <span aria-hidden="true">&nbsp;</span>
-          <span class="sr-only">Not selected</span>
-        </template>
-      </template>
-      -->
       <template v-slot:cell(examinationsdatum)="row">
         <b-form-datepicker v-model="row.item.examinationsdatum"/>
       </template>
       <template v-slot:cell(ladok_grade)="row">
         <b-form-select v-model="row.item.ladok_grade" :options="grades_options"></b-form-select>
       </template>
-
-      
       <template v-slot:cell(PNmbr)="row">
         <b-form v-model="row.item.PNmbr" ></b-form>
       </template>
-
-
       <template v-slot:cell(grades)="row">
         <div v-for="items in row.item" :key="items.grade">
           <div v-for="grade in items" :key="grade">
@@ -68,7 +52,20 @@
       </template>
       
     </b-table>
-
+    <div>
+      <b-modal id="modal-1" title="Info" >
+      <div class="my-4">
+        <div>
+          <li v-if="!failedPush_test.length">Lyckad registrering!</li>
+        </div>
+        <li v-if="failedPush_test.length">Resultat registrerades ej för: </li>
+        <p></p>
+          <div v-for="items in failedPush_test" :key="items">
+            {{items.pNmr}}
+          </div>
+        </div>
+      </b-modal>
+    </div>
     {{selected_items}}
   </div>
 
@@ -92,9 +89,9 @@ export default {
           {key: 'grades', label: 'Betyg'},
           {key: 'examinationsdatum'},
           {key: 'ladok_grade'},
-          {key: 'Status'},
+          /*{key: 'Status'},
           {key: 'Information'},
-          {key: 'PNmbr'}],
+          {key: 'PNmbr'}*/],
         items: [/*{"firstName":"Lukas","grades":[{"grade":"U","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"U","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Skog","userName":"luksok-8"},{"firstName":"Magdalena","grades":[{"grade":"VG","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Fernlund","userName":"magrad-2"},{"firstName":"Simon","grades":[{"grade":"G","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekta"}],"lastName":"Sterner","userName":"simste-6"}
          */],
         selected_kursKod: '',
@@ -104,6 +101,8 @@ export default {
         pushArray: [/*{"pNmr": "9603169876", "course": "D0031N", "module": "0002", "date": "2020-12-25", "grade": "MVG"},
         {"pNmr": "9408315678", "course": "D0031N", "module": "0005", "date": "2020-12-25", "grade": "G"}*/],
         requestBody: '',
+        failedPush_test: [{"pNmr": "9603169876", "course": "D0031N", "module": "0002", "date": "2020-12-25", "grade": "MVG"},
+        {"pNmr": "9408315678", "course": "D0031N", "module": "0005", "date": "2020-12-25", "grade": "G"}],
         failedPush: []
       }
 
