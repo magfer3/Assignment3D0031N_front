@@ -7,7 +7,6 @@
         <div class="col-sm">
           <label for="kursKodInput">Kurskod</label>
           <input class="form-control input-sm" v-on:keyup.enter="submitKursKod" id="kursKodInput" type="text" v-model="selected_kursKod" placeholder="Skriv in kurskoden här">
-        <code>{{selected_kursKod}}</code>
         </div>
         <!-- Dropdown för modul-->
         <div class="col-sm">
@@ -16,8 +15,6 @@
             <Dropdown :kurskod="selected_kursKod" @selectedItem="getSelectedItem" />
             <button @click="pushToLadok" v-b-modal.modal-1>Pusha till Ladok</button>
             </div>
-          <code>{{selected_modul}}</code>
-        
         </div>
       </div>
     </div>
@@ -56,17 +53,16 @@
       <b-modal id="modal-1" title="Info" >
       <div class="my-4">
         <div>
-          <li v-if="!failedPush_test.length">Lyckad registrering!</li>
+          <li v-if="!failedPush.length">Lyckad registrering!</li>
         </div>
-        <li v-if="failedPush_test.length">Resultat registrerades ej för: </li>
+        <li v-if="failedPush.length">Resultat registrerades ej för: </li>
         <p></p>
-          <div v-for="items in failedPush_test" :key="items">
-            {{items.pNmr}}
+          <div v-for="items in failedPush" :key="items">
+            Personnummer: {{items.pNmr}} Kurkod: {{items.course}} {{items.module}}
           </div>
         </div>
       </b-modal>
     </div>
-    {{selected_items}}
   </div>
 
 </template>
@@ -89,20 +85,14 @@ export default {
           {key: 'grades', label: 'Betyg'},
           {key: 'examinationsdatum'},
           {key: 'ladok_grade'},
-          /*{key: 'Status'},
-          {key: 'Information'},
-          {key: 'PNmbr'}*/],
-        items: [/*{"firstName":"Lukas","grades":[{"grade":"U","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"U","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Skog","userName":"luksok-8"},{"firstName":"Magdalena","grades":[{"grade":"VG","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekt"}],"lastName":"Fernlund","userName":"magrad-2"},{"firstName":"Simon","grades":[{"grade":"G","nameOfAssignment":"Inlämningsuppgift1"},{"grade":"G","nameOfAssignment":"Inlämningsuppgift2"},{"grade":"VG","nameOfAssignment":"Inlämningsuppgift3"},{"grade":"VG","nameOfAssignment":"Projekta"}],"lastName":"Sterner","userName":"simste-6"}
-         */],
+          ],
+        items: [],
         selected_kursKod: '',
         selected_modul: '',
         selected_items: [],
         grades_options: ['U', 'G', 'VG'],
-        pushArray: [/*{"pNmr": "9603169876", "course": "D0031N", "module": "0002", "date": "2020-12-25", "grade": "MVG"},
-        {"pNmr": "9408315678", "course": "D0031N", "module": "0005", "date": "2020-12-25", "grade": "G"}*/],
+        pushArray: [],
         requestBody: '',
-        failedPush_test: [{"pNmr": "9603169876", "course": "D0031N", "module": "0002", "date": "2020-12-25", "grade": "MVG"},
-        {"pNmr": "9408315678", "course": "D0031N", "module": "0005", "date": "2020-12-25", "grade": "G"}],
         failedPush: []
       }
 
@@ -126,9 +116,11 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
-    axios.post('http://localhost:8080/Assignment3.2_D0031N/resources/ladok', queryString.stringify(this.requestBody), config).then(res => console.log(res)).catch(err => {
+    axios.post('http://localhost:8080/Assignment3.2_D0031N/resources/ladok', queryString.stringify(this.requestBody), config)
+    .then(res => console.log(res))
+    .catch(err => {
     console.log(err);
-    this.failedPush.push(this.requestBody)
+    this.failedPush.push(this.requestBody);
     }
     );
      })},
@@ -151,12 +143,6 @@ export default {
       })
       }
   },
-  filters: {
-       // Filter definitions
-    toArray(value) {
-      return value.toUpperCase();
-      }
-    }
 }
 </script>
 
