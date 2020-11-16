@@ -23,11 +23,7 @@ export default {
     data() {
         return {
             selected: '',
-            options: [
-                //{text: 'D0031N', value: 'D0031N'},
-                //{text: 'D0025E', value: 'D0025E'},
-                //{text: 'D004N', value: 'D004N'},
-            ],
+            options: [],
             text: ""
         }
     },
@@ -36,7 +32,6 @@ export default {
         fetchDataAxios(){
             axios.get('http://localhost:8080/Assignment3.2_D0031N/resources/epok/' + this.kurskod)
             .then(res => this.options = res.data ) 
-          //  .then(res =>console.log(res)) 
             .catch(err => console.log(err));
 
         }

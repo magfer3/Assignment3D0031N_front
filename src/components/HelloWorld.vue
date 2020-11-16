@@ -58,7 +58,7 @@
         <li v-if="failedPush.length">Resultat registrerades ej för: </li>
         <p></p>
           <div v-for="items in failedPush" :key="items">
-            Personnummer: {{items.pNmr}} Kurkod: {{items.course}} {{items.module}}
+            Personnummer: {{items.pNmr}} Kurskod: {{items.course}} Modul: {{items.module}}
           </div>
         </div>
       </b-modal>
@@ -110,19 +110,20 @@ export default {
    pushToLadok(){
      this.failedPush = [];
      Array.prototype.forEach.call(this.pushArray, stud =>{
-     this.requestBody = stud;
-     const config = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    }
-    axios.post('http://localhost:8080/Assignment3.2_D0031N/resources/ladok', queryString.stringify(this.requestBody), config)
-    .then(res => console.log(res))
-    .catch(err => {
-    console.log(err);
-    this.failedPush.push(this.requestBody);
-    }
-    );
+        this.requestBody = stud;
+        console.log(this.requestBody);
+        const config = {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }
+        axios.post('http://localhost:8080/Assignment3.2_D0031N/resources/ladok', queryString.stringify(this.requestBody), config)
+        .then(res => console.log(res))
+        .catch(err => {
+          console.log(err);
+          this.failedPush.push(stud);
+        }
+        );
      })},
     submitKursKod(){
       this.URL_kursKod = "" + this.selected_kursKod
